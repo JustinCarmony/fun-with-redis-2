@@ -1,0 +1,5 @@
+config/prefs.rb
+.idea
+log/
+.vagrant
+deploy/hosts/*
