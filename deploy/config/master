@@ -251,7 +251,7 @@
 
 file_roots:
   base:
-    - /srv/salt
+    - /vagrant/saltstack/salt
 
 # The hash_type is the hash to use when discovering the hash of a file on
 # the master server, the default is md5, but sha1, sha224, sha256, sha384
@@ -317,7 +317,7 @@ file_roots:
 
 pillar_roots:
   base:
-    - /srv/pillar
+    - /vagrant/saltstack/pillar
 
 # ext_pillar:
 #   - hiera: /etc/hiera.yaml

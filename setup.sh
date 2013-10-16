@@ -23,8 +23,15 @@ vagrant status | egrep --color=no '(master|client)' | awk '{ print $1 }' | paral
 
 # I Don't know why, but the master server's minion is having a hard time connecting to the 
 # Salt Master, so run the provision on the master to re-connect it.
-sleep 30
-vagrant provision master
+#vagrant provision master
 
 # Accept the Salt Minions
+sleep 30
 vagrant ssh master -c "sudo salt-key -A --yes"
+
+# Call state.highstate on master
+echo "Calling Highstate on Master"
+vagrant ssh master -c "sudo salt-call state.highstate"
+
+echo "Calling Highstate on All Servers"
+vagrant ssh master -c "sudo salt \* state.highstate"

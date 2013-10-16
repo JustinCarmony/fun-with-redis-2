@@ -17,12 +17,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     
     aws.ami = $aws_ami
     aws.region = $aws_region
+    aws.instance_type = $aws_instance_type
 
     override.ssh.username = $aws_ssh_username
     override.ssh.private_key_path = $aws_ssh_private_key_path
   end
 
-  config.vm.define :master do |master|
+  config.vm.define :master , primary: true do |master|
     master.vm.provider "aws" do |aws|
       aws.tags = {
         'Name' => 'redis-demo-master'

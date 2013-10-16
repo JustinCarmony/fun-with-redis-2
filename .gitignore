@@ -3,3 +3,4 @@ config/prefs.rb
 log/
 .vagrant
 deploy/hosts/*
+src/vendor

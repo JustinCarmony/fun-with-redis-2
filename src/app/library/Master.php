@@ -1,0 +1,150 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: justin
+ * Date: 4/26/12
+ * Time: 9:24 AM
+ * To change this template use File | Settings | File Templates.
+ */
+
+class Master
+{
+    /**
+     * @var Predis\Client
+     */
+    protected $predis = null;
+    protected $instance_id = null;
+    protected $reboot_id = null;
+    protected $cmd_count = null;
+    protected $cmd_time = null;
+    protected $cmd_cps = null;
+
+    const CLIENT_HEARTBEAT_TIMEOUT = 30;
+
+    public function __construct()
+    {
+        $this->predis = PredisManager::GetMasterPredis();
+    }
+
+    public function Log($txt)
+    {
+        echo "[".number_format(round(microtime(true), 2), 2, '.', '')."] ".$txt."\n";
+    }
+
+    public function Run()
+    {
+        $this->Startup();
+        $work = true;
+        $count = 0;
+        while($work)
+        {
+            $count++;
+
+            $this->Work();
+
+            if($count >= 60)
+            {
+                $count = 0;
+                $this->Log("Current Commands per Second: ".$this->cmd_cps);
+            }
+
+            // Check to see if a master reboot has been issued
+            if($this->predis->get('reboot.master') != $this->reboot_id)
+            {
+                $this->Log("Reboot Detected!");
+                $this->Log("Shutting Down...");
+                return;
+            }
+
+            // Check to see if master reset has been called
+            if($this->predis->get('system.reset'))
+            {
+                $this->Log("System Reset Detected... Executing...");
+                $this->predis->del('system.reset');
+                // Re-startup
+                $this->Startup();
+                $this->Log("System Reset Complete, New Instace ID: ".$this->instance_id);
+            }
+
+            // Wait exactly one second
+            usleep(1000000);
+        }
+    }
+
+    public function Work()
+    {
+        // Determine Current CpS
+        $info = $this->predis->info();
+        $last_cmd_count = $this->cmd_count;
+        $last_cmd_time = $this->cmd_time;
+        $this->cmd_count = $info['total_commands_processed'];
+        if($last_cmd_count > 0)
+        {
+            $this->cmd_time = microtime(true);
+            $between = $this->cmd_time - $last_cmd_time;
+            if($between <= 0)
+            {
+                $between = 0.1;
+            }
+            $this->cmd_cps = round(($this->cmd_count - $last_cmd_count) / $between, 0);
+            $prev_cmd_cps = $this->predis->get('stats.cps');
+            $this->predis->set('stats.cps', $this->cmd_cps);
+            $max_cps = $this->predis->get('stats.cps_max');
+            if($this->cmd_cps > $max_cps)
+            {
+                $this->predis->set('stats.cps_max', $this->cmd_cps);
+            }
+        }
+        // Determine Current CPU
+        $process_id = $info['process_id'];
+        file_put_contents('/tmp/redis_process_id', $process_id);
+        $cpu = trim(exec("ps S -p $process_id -o pcpu="));
+        $this->predis->set('stats.cpu', $cpu);
+
+        // Prune Workers
+        $time = time();
+        $heartbeats = $this->predis->hgetall('client.heartbeats');
+
+        foreach($heartbeats as $client_id => $last_hb)
+        {
+            if($time - $last_hb > self::CLIENT_HEARTBEAT_TIMEOUT)
+            {
+                $this->Log("Heartbeat Expired for $client_id");
+                $this->predis->hdel('client.heartbeats', $client_id);
+                $this->predis->hdel('client.status', $client_id);
+            }
+        }
+
+    }
+
+    public function Startup()
+    {
+        $this->Log("Executing Master Startup...");
+        $this->predis->set('client.incr', 0);
+        $this->instance_id = $this->predis->incr('system.instance');
+        $this->Log("Instance ID: ".$this->instance_id);
+        $this->reboot_id = $this->predis->get('reboot.master');
+        if(!$this->reboot_id)
+        {
+            $this->predis->set('reboot.master', 1);
+            $this->reboot_id = 1;
+        }
+
+        $this->Log("Reboot ID: ".$this->reboot_id);
+
+        // Set Defaults for new instance
+        $this->Log("Setting system.workforce to 0");
+        $this->predis->set('system.workforce', 0);
+
+        $this->Log("Setting system.mode to IdleMode");
+        $this->predis->set('system.mode', 'IdleMode');
+
+        // Reset client heartbeats and statuses
+        $this->predis->del('client.heartbeats');
+        $this->predis->del('client.status');
+
+        // Delete Stats
+        $this->predis->del('stats.cps');
+        $this->predis->del('stats.cps_max');
+    }
+}

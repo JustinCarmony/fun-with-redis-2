@@ -1,0 +1,6 @@
+{
+    "require": {
+        "phalcon/devtools": "dev-master",
+        "predis/predis": "0.8.*@dev"
+    }
+}
