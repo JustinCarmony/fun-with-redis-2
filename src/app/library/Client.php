@@ -136,7 +136,7 @@ class Client
         $status->latency_ms = $this->latency_ms;
         $ips = Utility::GetMachineIPs();
         $status->ip = $ips[3]; // Get the internal ID
-        $status->hostname = gethostname();
+        $status->hostname = file_get_contents('/etc/hostname');
         $this->predis->hset('client.status', $this->client_id, json_encode($status));
     }
 

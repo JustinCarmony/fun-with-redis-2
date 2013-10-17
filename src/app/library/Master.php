@@ -115,6 +115,9 @@ class Master
             }
         }
 
+        // Sendout Ping for Minions
+        $this->predis->publish('system.ping', '1');
+
     }
 
     public function Startup()

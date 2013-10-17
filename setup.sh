@@ -13,7 +13,9 @@ parallel_provision() {
 }
 
 # Deploy servers but do not provision (yet)
-vagrant up --provider=aws --no-provision
+# Don't do it in parallel in case you've deploy many (i.e. 5+) 
+# and you'll exceed the Rate Limit
+vagrant up --provider=aws --no-provision --no-parallel
 
 # Build the hosts file for each servers
 ./bin/buildHostsFiles.py

@@ -32,19 +32,19 @@
         <div class="row">
             <div class="col col-sm-4">
                 <div class="tile">
-                    <h1 class="">199,999</h1>
-                    <h6>Requests Per Second</h6>
+                    <h1 class="">{{status.requestsPerSecond}}</h1>
+                    <h6>Reqs Per Second</h6>
                 </div>
             </div>
             <div class="col col-sm-4">
                 <div class="tile">
-                    <h1 class="">0</h1>
+                    <h1 class="">{{status.activeWorkers}}</h1>
                     <h6>Active Workers</h6>
                 </div>
             </div>
             <div class="col col-sm-4">
                 <div class="tile">
-                    <h1 class="">12%</h1>
+                    <h1 class="">{{status.userCpu}}%</h1>
                     <h6>Redis CPU</h6>
                 </div>
             </div>
@@ -55,11 +55,8 @@
             </div>
             <div class="col-sm-9" style="padding-top:10px;">
                 <div class="progress">
-                    <div class="progress-bar" style="width: 40%;"></div>
-                    <div class="progress-bar progress-bar-warning" style="width: 10%;"></div>
-                    <div class="progress-bar progress-bar-danger" style="width: 10%;"></div>
-                    <div class="progress-bar progress-bar-success" style="width: 10%;"></div>
-                    <div class="progress-bar progress-bar-info" style="width: 10%;"></div>
+                    <div id="userCpu" class="progress-bar" style="width: 0%;"></div>
+                    <div id="sysCpu" class="progress-bar progress-bar-warning" style="width: 0%;"></div>
                 </div>
             </div>
         </div>
@@ -69,23 +66,19 @@
             </div>
             <div class="col-sm-9" style="padding-top:10px;">
                 <div class="progress">
-                    <div class="progress-bar" style="width: 40%;"></div>
-                    <div class="progress-bar progress-bar-warning" style="width: 10%;"></div>
-                    <div class="progress-bar progress-bar-danger" style="width: 10%;"></div>
-                    <div class="progress-bar progress-bar-success" style="width: 10%;"></div>
-                    <div class="progress-bar progress-bar-info" style="width: 10%;"></div>
+                    <div id="userMemory" class="progress-bar" style="width: 0%;"></div>
                 </div>
             </div>
         </div>
 
-        <div class="row" style="padding: 20px 0 0 0;" ng-controller="MenuCtrl">
+        <div id="MenuCtrl" class="row" style="padding: 20px 0 0 0;" ng-controller="MenuCtrl">
             <div class="col-md-12">
                 <div class="navbar navbar-inverse">
                     <div class="navbar-collapse collapse" id="nav-collapse-01">
                         <ul class="nav">
-                            <li class="active">
+                            <li class="mode_IdleMode">
                                 <a href="" ng-click="menuClick('IdleMode');">
-                                    Idle
+                                    Idle {{testing}}
                                 </a>
                             </li>
 
@@ -98,7 +91,7 @@
                                     $display = str_ireplace('Mode', '', $name);
                                     ?>
 
-                                    <li>
+                                    <li class="mode_<?php echo $name;?>">
                                         <a href="" ng-click="menuClick('<?php echo $name; ?>');">
                                             <?php echo $display; ?>
                                         </a>
@@ -153,9 +146,6 @@
 
 <!-- Angular JS App -->
 <script src="/js/app/app.js"></script>
-<script src="/js/app/services.js"></script>
-<script src="/js/app/controllers.js"></script>
-<script src="/js/app/filters.js"></script>
-<script src="/js/app/directives.js"></script>
+
 </body>
 </html>

@@ -9,9 +9,17 @@ common:
             - autoconf
             - siege
             - python-software-properties
-            - supervisor
             - ruby1.9.1
             - ruby1.9.1-dev
+
+supervisor:
+    pkg.installed:
+        - require:
+            - pkg: common
+    service.running:
+        - require:
+            - pkg: supervisor
+
 
 /var/deploy:
     file.directory:
