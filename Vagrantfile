@@ -29,7 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         'Name' => 'redis-demo-master'
       }
     end
-    master.vm.provision :shell, :inline => "bash /vagrant/deploy/install-salt-master.sh master"
+    master.vm.provision :shell, :inline => "sudo bash /vagrant/deploy/install-salt-master.sh master"
     master.vm.box = "dummy"
   end
 
@@ -41,7 +41,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           'Name' => 'redis-demo-client' + client_num.to_s
         }
       end
-      client.vm.provision :shell, :inline => "bash /vagrant/deploy/install-salt-minion.sh client" + client_num.to_s
+      client.vm.provision :shell, :inline => "sudo bash /vagrant/deploy/install-salt-minion.sh client" + client_num.to_s
       client.vm.box = "dummy"
     end
   end

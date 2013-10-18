@@ -30,12 +30,15 @@ class ApiController extends \Phalcon\Mvc\Controller
 
     public function statusAction()
     {
-        $this->response->activeWorkers = rand(10, 100);
-        $this->response->requestsPerSecond = number_format(rand(1000, 10000));
-        $this->response->userCpu = rand(0,60);
-        $this->response->sysCpu = rand(0,40);
+        $worker_status = $this->getWorkerStatus();
 
-        $this->response->userMemory = rand(0,100);
+        $this->response->activeWorkers = $worker_status['active']." /" .$worker_status['all'];
+        $this->response->requestsPerSecond = number_format($this->predis->get('stats.cps'), 0);
+        $this->response->userCpu =  number_format($this->predis->get('stats.cpu'), 1);
+        $this->response->sysCpu = 0; //rand(0,40);
+
+        $this->response->userMemory = 10;
+
 
         $this->sendResponse();
     }
@@ -50,7 +53,6 @@ class ApiController extends \Phalcon\Mvc\Controller
         else if($this->request->isPost())
         {
             $data = (object)json_decode($this->request->getRawBody());
-
             $new_mode = $data->mode;
 
             if($current_mode == $new_mode)
@@ -58,8 +60,12 @@ class ApiController extends \Phalcon\Mvc\Controller
                 $this->sendError("Mode Already Selected");
             }
 
-            $mode = ModeManager::getInstance()->createMode($current_mode);
-            $mode->masterTeardown();
+            if($current_mode)
+            {
+                $mode = ModeManager::getInstance()->createMode($current_mode);
+                $mode->masterTeardown();
+            }
+
 
             $mode = ModeManager::getInstance()->createMode($new_mode);
             $mode->masterSetup();
@@ -93,5 +99,30 @@ class ApiController extends \Phalcon\Mvc\Controller
         $this->response->err_msg = $msg;
         echo json_encode($this->response);
         exit();
+    }
+
+    /** Helper Functions */
+
+    public function getWorkerStatus()
+    {
+        $report = array('active' => 0, 'idle' => 0, 'all' => 0);
+
+        $status_data = $this->predis->hgetall('client.status');
+
+        foreach($status_data as $data_json)
+        {
+            $worker_status = (object)json_decode($data_json);
+            if($worker_status->working)
+            {
+                $report['active']++;
+            }
+            else
+            {
+                $report['idle']++;
+            }
+            $report['all']++;
+        }
+
+        return $report;
     }
 }

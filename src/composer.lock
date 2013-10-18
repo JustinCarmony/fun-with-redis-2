@@ -3,20 +3,62 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "4915b645777fc2764c7ec18973ad80b9",
+    "hash": "f2aa92822e39175723ba1ef5989842e2",
     "packages": [
+        {
+            "name": "christeredvartsen/sysinfo",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/christeredvartsen/sysinfo.git",
+                "reference": "a952cbe1ef746c2234c269da2ee9850c52ce2727"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/christeredvartsen/sysinfo/zipball/a952cbe1ef746c2234c269da2ee9850c52ce2727",
+                "reference": "a952cbe1ef746c2234c269da2ee9850c52ce2727",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SysInfo": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christer Edvartsen",
+                    "email": "cogo@starzinger.net",
+                    "homepage": "https://github.com/christeredvartsen",
+                    "role": "Project lead"
+                }
+            ],
+            "description": "SysInfo is a PHP library that can be used to fetch information about the system (CPU usage, Load avg., Memory usage +++)",
+            "homepage": "https://github.com/christeredvartsen/sysinfo",
+            "keywords": [
+                "sysinfo"
+            ],
+            "time": "2012-07-17 09:40:41"
+        },
         {
             "name": "phalcon/devtools",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phalcon/phalcon-devtools.git",
-                "reference": "2f88dc90177e09c7a54268d9f385d6a90f5352c1"
+                "reference": "df51e81bd887d3fc40c789758303efb3c427e65f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phalcon/phalcon-devtools/zipball/2f88dc90177e09c7a54268d9f385d6a90f5352c1",
-                "reference": "2f88dc90177e09c7a54268d9f385d6a90f5352c1",
+                "url": "https://api.github.com/repos/phalcon/phalcon-devtools/zipball/df51e81bd887d3fc40c789758303efb3c427e65f",
+                "reference": "df51e81bd887d3fc40c789758303efb3c427e65f",
                 "shasum": ""
             },
             "require": {
@@ -44,7 +86,7 @@
                 "framework",
                 "phalcon"
             ],
-            "time": "2013-10-14 14:48:28"
+            "time": "2013-10-16 14:39:11"
         },
         {
             "name": "predis/predis",

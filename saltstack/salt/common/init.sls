@@ -11,6 +11,7 @@ common:
             - python-software-properties
             - ruby1.9.1
             - ruby1.9.1-dev
+            - gawk
 
 supervisor:
     pkg.installed:

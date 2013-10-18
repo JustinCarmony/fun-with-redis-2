@@ -3,7 +3,7 @@
 var redisApp = angular.module('redisApp', []);
 
 var AppSettings = {
-    statusPollTiming: 6000
+    statusPollTiming: 500
 };
 
 //service style, probably the simplest one

@@ -2,8 +2,8 @@
 
 # Copy over new hosts file
 
-sudo cat /vagrant/deploy/hosts/$1 > /etc/hosts
-sudo echo "$1.saltdemo.com" > /etc/hostname
+cat /vagrant/deploy/hosts/$1 > /etc/hosts
+echo "$1.saltdemo.com" > /etc/hostname
 
 # Remove provision finished to re-run
 #rm /root/provision-finished.txt

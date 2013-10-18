@@ -3,10 +3,17 @@ import sys
 import subprocess
 import os
 import pprint
+import glob
 
 # Set current Working Directory
 os.chdir(os.path.dirname(os.path.realpath(__file__)) + '/../')
 print "Current Working Directory: " + os.getcwd()	
+
+# Cleanup old runs:
+glob_dir = 'deploy/hosts/*'
+glob_dir_files = glob.glob(glob_dir)
+for file_name in glob_dir_files:
+   os.remove(file_name)
 
 # Get the names of the vagrant servers
 command = "vagrant status | egrep --color=no '(master|client)' | awk '{ print $1 }'"
@@ -35,6 +42,7 @@ for name in server_names:
 	f = open("deploy/hosts/" + name, 'w')
 
 	# Write the fully qualified domain
+	f.write("127.0.0.1 " + name + ".saltdemo.com \n")
 	f.write("127.0.1.1 " + name + ".saltdemo.com \n\n")
 
 	for n in server_names:

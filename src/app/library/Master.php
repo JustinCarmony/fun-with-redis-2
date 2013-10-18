@@ -75,6 +75,8 @@ class Master
     {
         // Determine Current CpS
         $info = $this->predis->info();
+        $this->predis->set('stats.info', json_encode($info));
+
         $last_cmd_count = $this->cmd_count;
         $last_cmd_time = $this->cmd_time;
         $this->cmd_count = $info['total_commands_processed'];
@@ -100,6 +102,8 @@ class Master
         file_put_contents('/tmp/redis_process_id', $process_id);
         $cpu = trim(exec("ps S -p $process_id -o pcpu="));
         $this->predis->set('stats.cpu', $cpu);
+
+        // Determine Redis CPU
 
         // Prune Workers
         $time = time();

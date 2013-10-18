@@ -1,0 +1,3 @@
+[submodule "src/public/phpsysinfo"]
+	path = src/public/phpsysinfo
+	url = git@github.com:rk4an/phpsysinfo.git

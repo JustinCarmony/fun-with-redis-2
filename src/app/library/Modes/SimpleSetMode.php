@@ -2,18 +2,17 @@
 
 namespace Modes;
 
-class SimpleGetMode extends BaseMode
+class SimpleSetMode extends BaseMode
 {
     public function masterSetup()
     {
-        $predis = \PredisManager::GetMasterPredis();
-        $predis->set('simple_get.value', rand(1,9999999999));
+
     }
 
     public function masterTeardown()
     {
         $predis = \PredisManager::GetMasterPredis();
-        $predis->del('simple_get.value');
+        $predis->del('simple_set.value');
     }
 
     public function clientSetup()
@@ -34,7 +33,7 @@ class SimpleGetMode extends BaseMode
         while($count < $limit)
         {
             $count++;
-            $predis->get('simple_get.value');
+            $predis->set('simple_get.value', rand(0,1000));
         }
 
     }
