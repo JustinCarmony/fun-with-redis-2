@@ -9,7 +9,7 @@ parallel_provision() {
         echo "Provisioning '$box'. Output will be in: log/$box.out.txt" 1>&2
         echo $box
     done | xargs -P $MAX_PROCS -I"BOXNAME" \
-        sh -c 'vagrant provision BOXNAME >log/BOXNAME.out.txt 2>&1 || echo "Error Occurred: BOXNAME"'
+        sh -c 'vagrant provision BOXNAME >log/BOXNAME.out.txt"'
 }
 
 # but run provision tasks in parallel
