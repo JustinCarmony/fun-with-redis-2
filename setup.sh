@@ -1,8 +1,16 @@
 #!/bin/bash
 
 # Setup
-
+DEPLOY_PROCS=10
 MAX_PROCS=20
+
+parallel_deploy() {
+    while read box; do
+        echo "Deploying '$box'. Output will be in: log/$box.out.txt" 1>&2
+        echo $box
+    done | xargs -P $DEPLOY_PROCS -I"BOXNAME" \
+        sh -c 'vagrant up --provider=digital_ocean --no-provision BOXNAME || echo "Error Occurred: BOXNAME"'
+}
  
 parallel_provision() {
     while read box; do
@@ -15,7 +23,7 @@ parallel_provision() {
 # Deploy servers but do not provision (yet)
 # Don't do it in parallel in case you've deploy many (i.e. 5+) 
 # and you'll exceed the Rate Limit
-vagrant up --provider=aws --no-provision --no-parallel
+vagrant status | egrep --color=no '(master|client)' | awk '{ print $1 }' | parallel_deploy
 
 # Build the hosts file for each servers
 ./bin/buildHostsFiles.py

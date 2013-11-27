@@ -32,12 +32,18 @@ class ApiController extends \Phalcon\Mvc\Controller
     {
         $worker_status = $this->getWorkerStatus();
 
+        $current_mode = $this->predis->get('system.mode');
+        $mode = ModeManager::getInstance()->createMode($current_mode);
+
         $this->response->activeWorkers = $worker_status['active']." /" .$worker_status['all'];
         $this->response->requestsPerSecond = number_format($this->predis->get('stats.cps'), 0);
+        $this->response->requestsPerSecondMax = number_format($this->predis->get('stats.cps_max'), 0);
         $this->response->userCpu =  number_format($this->predis->get('stats.cpu'), 1);
         $this->response->sysCpu = 0; //rand(0,40);
 
         $this->response->userMemory = 10;
+
+        $this->response->modeHtml = $mode->templateControlPanel();
 
 
         $this->sendResponse();

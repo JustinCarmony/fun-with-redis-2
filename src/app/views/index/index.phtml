@@ -22,6 +22,7 @@
 
     <script src="/js/angular.js"></script>
     <script src="/js/angular-route.js"></script>
+    <script src="/js/angular-sanitize.js"></script>
 </head>
 <body class="palette-midnight-blue">
 <header>
@@ -33,7 +34,7 @@
             <div class="col col-sm-4">
                 <div class="tile">
                     <h1 class="">{{status.requestsPerSecond}}</h1>
-                    <h6>Reqs Per Second</h6>
+                    <h6>CMDs per Sec. (Max: {{status.requestsPerSecondMax}})</h6>
                 </div>
             </div>
             <div class="col col-sm-4">
@@ -60,17 +61,11 @@
                 </div>
             </div>
         </div>
-        <div class="row" style="padding:20px 0 0 0;">
-            <div class="col-sm-2">
-                <h6 style="text-align: right;">Memory:</h6>
-            </div>
-            <div class="col-sm-9" style="padding-top:10px;">
-                <div class="progress">
-                    <div id="userMemory" class="progress-bar" style="width: 0%;"></div>
-                </div>
+        <div class="row">
+            <div id="modeHtml" class="col col-sm-12" ng-bind-html="trustedHtml">
+
             </div>
         </div>
-
         <div id="MenuCtrl" class="row" style="padding: 20px 0 0 0;" ng-controller="MenuCtrl">
             <div class="col-md-12">
                 <div class="navbar navbar-inverse">
@@ -109,21 +104,6 @@
             </div>
         </div>
 
-        <div class="row" style="padding:20px 0 0 0;">
-            <div class="col-md-12">
-                <div class="tile">
-                    <div ng-view></div>
-                </div>
-            </div>
-        </div>
-        <ul class="menu">
-            <li><a href="#/view1">view1</a></li>
-            <li><a href="#/view2">view2</a></li>
-        </ul>
-
-
-
-        <div>Angular seed app: v<span app-version></span></div>
     </div>
 </div>
 <footer>

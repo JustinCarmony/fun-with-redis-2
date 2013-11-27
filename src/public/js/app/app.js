@@ -7,7 +7,7 @@ var AppSettings = {
 };
 
 //service style, probably the simplest one
-redisApp.service('dataService', ['$rootScope', '$http', function($rootScope, $http) {
+redisApp.service('dataService', ['$rootScope', '$http', function($rootScope, $http, $sce) {
     var thisService = this;
     // Set Some Defaults
     $rootScope.status = {};
@@ -17,6 +17,9 @@ redisApp.service('dataService', ['$rootScope', '$http', function($rootScope, $ht
     this.updateStatus = function(){
         $http.get('/api/status').success(function(data){
             thisService.status = data;
+
+            // Ugly hack....
+            $('#modeHtml').html(data.modeHtml);
             $rootScope.$broadcast('status-update', data);
 
             setTimeout(function(){

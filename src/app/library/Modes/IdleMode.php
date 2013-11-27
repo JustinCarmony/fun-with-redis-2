@@ -41,7 +41,7 @@ class IdleMode extends BaseMode
     public function templateControlPanel()
     {
         return <<<HTML
-<h1>All Workers are Idle</h1>
+<h1 style="text-align:center;">All Workers are Idle</h1>
 HTML;
 
     }
