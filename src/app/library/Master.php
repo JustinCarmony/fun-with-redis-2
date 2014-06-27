@@ -75,11 +75,12 @@ class Master
     {
         // Determine Current CpS
         $info = $this->predis->info();
+        var_dump($info);
         $this->predis->set('stats.info', json_encode($info));
 
         $last_cmd_count = $this->cmd_count;
         $last_cmd_time = $this->cmd_time;
-        $this->cmd_count = $info['total_commands_processed'];
+        $this->cmd_count = $info['Stats']['total_commands_processed'];
         if($last_cmd_count > 0)
         {
             $this->cmd_time = microtime(true);

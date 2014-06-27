@@ -39,9 +39,22 @@ vagrant status | egrep --color=no '(master|client)' | awk '{ print $1 }' | paral
 sleep 30
 vagrant ssh master -c "sudo salt-key -A --yes"
 
+time vagrant reload
+
+vagrant ssh master -c "sudo salt-key -A --yes"
+
 # Call state.highstate on master
 echo "Calling Highstate on Master"
-vagrant ssh master -c "sudo salt-call state.highstate"
+time vagrant ssh master -c "sudo salt-call state.highstate"
 
 echo "Calling Highstate on All Servers"
-vagrant ssh master -c "sudo salt \* state.highstate"
+time vagrant ssh master -c "sudo salt \* state.highstate"
+
+echo "Restarting Supervisor on Master Server"
+vagrant ssh master -c "sudo salt master.\* service.restart supervisor"
+
+echo "Restarting Supervisor on Client Servers"
+vagrant ssh master -c "sudo salt client\* service.restart supervisor"
+
+echo "Master's IP"
+vagrant ssh master -c "sudo ifconfig"
